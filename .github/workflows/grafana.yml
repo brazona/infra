@@ -3,7 +3,7 @@
 ### Pipeline executa os deploys do Grafana e Prometheus
 ###
 
-name: Grafana e Prometheus Pipeline
+name: Grafana Pipeline
 
 on:
   pull_request:

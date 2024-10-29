@@ -1,0 +1,98 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana-pvc
+  namespace: infra-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  csi:
+    driver: driver.longhorn.io
+    volumeAttributes:
+      numberOfReplicas: '3'
+      size: 1Gi
+      staleReplicaTimeout: '20'
+    volumeHandle: grafana-pvc
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn
+  volumeMode: Filesystem
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-server
+  namespace: infra-app
+  labels:
+    app: grafana-server-api
+spec:
+  selector:
+    matchLabels:
+      app: grafana-server-api
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: grafana-server-api
+    spec:
+      imagePullSecrets:
+        - name: pipeline-docker-registry
+      containers:
+      - name: grafana-server
+        image: grafana/grafana:latest
+        ports:
+          - name: http-port
+            containerPort: 3000
+        volumeMounts:
+          - name: grafana-vol
+            mountPath: /var/lib/grafana
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 0
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: grafana-vol
+        persistentVolume:
+          claimName: grafana-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: grafana-server-service
+  namespace: infra-app
+spec:
+  selector:
+    app: grafana-server-api
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-server-ingress
+  namespace: infra-app
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: grafana.rancher.brazona.site
+      http:
+        paths:
+          - backend:
+              service:
+                name: grafana-server-service
+                port: 
+                  number: 3000
+            path: /
+            pathType: Prefix

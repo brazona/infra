@@ -1,0 +1,14 @@
+version: '3.0'
+
+services:
+  zipkin:
+    container_name: ${ZIPKIN_HOSTNAME}
+    hostname: ${ZIPKIN_HOSTNAME}
+    image: ${ZIPKIN_IMAGE}
+    networks:
+      - brazona_net_localhost
+    restart: on-failure
+    ports:
+      - ${ZIPKIN_PORT_EXT}:${ZIPKIN_PORT_INT}
+networks:
+  brazona_net_localhost: {}

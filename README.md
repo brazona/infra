@@ -36,11 +36,10 @@ As alterações são aplicadas em determinado ambiente através das **branchs**,
 
 | Branch | Ambiente |
 | --- | --- |
-| develop | Aplica no ambiente __DSV__ |
-| release/** | Aplica no ambiente __HMG__ |
-| pre-release/** | Aplica no ambiente __STG__ |
-| main | Aplica no ambiente __PRD__ |
-
+| develop | Aplica no ambiente *DSV* |
+| release/** | Aplica no ambiente *HMG* |
+| pre-release/** | Aplica no ambiente *STG* |
+| main | Aplica no ambiente *PRD* |
 
 ## Licença
 

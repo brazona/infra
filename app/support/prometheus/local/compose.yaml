@@ -1,0 +1,50 @@
+## docker-compose.yml ##
+
+version: '3'
+
+services:
+  alertmanager:
+    container_name: ${ALERTMANAGER_HOSTNAME}
+    hostname: ${ALERTMANAGER_HOSTNAME}
+    image: ${ALERTMANAGER_IMAGE}
+    networks:
+      - brazona_net_localhost
+    volumes:
+      - ./config/alertmanager.conf:/etc/alertmanager/alertmanager.conf
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.conf'
+    ports:
+      - ${ALERTMANAGER_PORT_EXT}:${ALERTMANAGER_PORT_INT}
+  prometheus:
+    container_name: ${PROMETHEUS_HOSTNAME}
+    hostname: ${PROMETHEUS_HOSTNAME}
+    image: ${PROMETHEUS_IMAGE}
+    networks:
+      - brazona_net_localhost
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./config/alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    links:
+      - alertmanager:alertmanager
+    ports:
+      - ${PROMETHEUS_PORT_EXT}:${PROMETHEUS_PORT_INT}
+  grafana:
+    container_name: ${GRAFANA_HOSTNAME}
+    hostname: ${GRAFANA_HOSTNAME}
+    image: ${GRAFANA_IMAGE}
+    networks:
+      - brazona_net_localhost
+    volumes:
+      - ./config/grafana_datasources.yml:/etc/grafana/provisioning/datasources/all.yaml
+      - ./config/grafana_config.ini:/etc/grafana/config.ini
+      - grafana_data:/var/lib/grafana
+    ports:
+      - ${GRAFANA_PORT_EXT}:${GRAFANA_PORT_INT}
+networks:
+  brazona_net_localhost: {}
+volumes:
+  prometheus_data: {}
+  grafana_data: {}

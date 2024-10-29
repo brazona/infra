@@ -1,0 +1,28 @@
+version: '3.0'
+
+services:
+  keycloak:
+    container_name: ${KEYCLOAK_HOSTNAME}
+    hostname: ${KEYCLOAK_HOSTNAME}
+    image: ${KEYCLOAK_IMAGE}
+    networks:
+      - brazona_net_localhost
+    command:
+      - start-dev
+      - --import-realm
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: ${KC_DB}
+      KC_DB_SCHEMA: ${KC_DB_SCHEMA}
+      KC_DB_URL: jdbc:${KC_DB_URL}/${KC_DB_NAME}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KEYCLOAK_IMPORT: ./realm-brazona.json
+    ports:
+      - ${KEYCLOAK_PORT_EXT}:${KEYCLOAK_PORT_INT}  
+    volumes:
+      - ./realm-brazona.json:/opt/keycloak/data/import/realm-export.json
+networks:
+  brazona_net_localhost: {}

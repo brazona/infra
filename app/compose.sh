@@ -4,9 +4,10 @@ DIRETORIO_ROOT=./
 DIRETORIO_APP=./app/
 FILE_NAME=.env
 DIRETORIO_ENV=$DIRETORIO_ROOT$FILE_NAME
-FILE_COMPOSE=local/compose.yaml
-FILE_COMPOSE_RUN=local/compose-run.yaml
-SCRIPT_NETWORK=create_network.sh
+DIR_ROOT=""
+FILE_COMPOSE=compose.yaml
+FILE_COMPOSE_RUN=compose-run.yaml
+SCRIPT_NETWORK=network.sh
 DIRETORIO_SCRIPT=$DIRETORIO_ROOT$SCRIPT_NETWORK
 
 ## Verifica se arquivo .env esta disponível root
@@ -55,9 +56,10 @@ sh $DIRETORIO_SCRIPT
 ## Verifica os paramentros
 if [ "$#" -lt 1 ]; then
   echo "É obrigatório o uso de ao menos 1 paramentro para executar esse script"
-  echo "Exemplo: app/launch_app.sh grafana-prometheus keycloak postgres"
+  echo "Exemplo: bash compose.sh db postgres"
   exit 1
 fi
+DIR_ROOT=$1
 echo "---> Listando argumentos :"
 num=1
 for arg in "$@"; do
@@ -70,7 +72,7 @@ for arg in "$@"; do
   echo "executando compose: $arg"
   rm -rf $DIRETORIO_COMPOSE_RUN
   DIRETORIO_COMPOSE=$DIRETORIO_ROOT$arg/$FILE_COMPOSE
-  DIRETORIO_COMPOSE_RUN=$DIRETORIO_ROOT$arg/$FILE_COMPOSE_RUN
+  DIRETORIO_COMPOSE_RUN=$DIRETORIO_ROOT/$arg/$FILE_COMPOSE_RUN
 
   ## Verifica se arquivo compose esta disponível root
   if [ -e "$DIRETORIO_COMPOSE" ] ; then
@@ -100,9 +102,6 @@ for arg in "$@"; do
     sed -i 's,'"$find"','$replace',' "$DIRETORIO_COMPOSE_RUN"
   done < $DIRETORIO_ENV
 
-  #docker-compose --env-file $DIRETORIO_ENV config
-  #docker-compose --env-file $DIRETORIO_ENV -f $DIRETORIO_COMPOSE up
-  #docker-compose --env-file $DIRETORIO_ENV -f $DIRETORIO_COMPOSE up -d --build --force-recreate
   docker-compose --env-file $DIRETORIO_ENV -f $DIRETORIO_COMPOSE_RUN up -d --build --force-recreate
   rm -rf $DIRETORIO_COMPOSE_RUN
   ((num++))

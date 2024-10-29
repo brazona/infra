@@ -36,26 +36,10 @@ As alterações são aplicadas em determinado ambiente através das **branchs**,
 
 | Branch | Ambiente |
 | --- | --- |
-| develop | Aplica no ambiente __DSV__ |
-| release/** | Aplica no ambiente __HMG__ |
-| pre-release/** | Aplica no ambiente __STG__ |
-| main | Aplica no ambiente __PRD__ |
-
-## Deploy com docker compose
-
-Para atender a necessidade de executar a os servidore em ambiente local, foi criado um manifesto compose que inicia as configurações iniciais dos servidores, proporcionando os recursos da arquitetura em ambiente **localhost.**
-
-Para executar essa instrução basta abrir o terminal shell, e executar com exemplo abaixo:
-
-```sh
-bash app/launch_app.sh grafana-prometheus keycloak postgres
-```
-
-Informando ao argumento do arquivo shell, os nomes dos servidores que deseja executar.
-
-> [!NOTE]
-> Para executar o comando acima citado, é necessário incluir no diretório **app/**, o arquivo .env, que fornecerá ao docker compose as variáveis de ambiente.
-> Procure o arquiteto do projeto e solicite o arquivo **.env**.
+| develop | Aplica no ambiente *DSV* |
+| release/** | Aplica no ambiente *HMG* |
+| pre-release/** | Aplica no ambiente *STG* |
+| main | Aplica no ambiente *PRD* |
 
 ## Licença
 

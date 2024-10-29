@@ -14,7 +14,7 @@ services:
     ports:
       - ${DB_PORT_EXT}:${DB_PORT_INT}  
     volumes:
-      - ../scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_vol:/var/lib/postgresql/data
 
 networks:

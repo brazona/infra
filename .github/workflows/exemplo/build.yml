@@ -2,7 +2,7 @@ name: Pipeline Build
 on:
   pull_request:
     paths:
-      - 'app/**'
+      - 'app/support/**'
       - '.github/workflows/**'
     branches:
       - 'main'
@@ -37,7 +37,7 @@ jobs:
     uses: ./.github/workflows/tag.yml
     with:
       environment_name: ${{needs.info-environment.outputs.environment_name}}
-      path_pom: ./app/pom.xml
+      path_pom: ./app/support/pom.xml
   java:
     name: Maven Build
     needs: [info-environment]
@@ -57,7 +57,7 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      run: mvn -B package --file app/pom.xml
+      run: mvn -B package --file app/support/pom.xml
   build:
     name: Build and Push Docker image 
     needs: [info-environment, generate-tag, java]
@@ -82,8 +82,8 @@ jobs:
           distribution: 'adopt'
           java-version: '21'
       - name: Build with Maven
-        #run: mvn -f ./app/ clean install 
-        run: mvn -f ./app/ clean install -P ${{needs.info-environment.outputs.maven_profile}}
+        #run: mvn -f ./app/support/ clean install 
+        run: mvn -f ./app/support/ clean install -P ${{needs.info-environment.outputs.maven_profile}}
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:

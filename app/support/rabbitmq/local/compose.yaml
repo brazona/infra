@@ -1,0 +1,19 @@
+version: '3.0'
+
+services:
+  rabbitmq:
+    container_name: ${RABBITMQ_HOSTNAME}
+    hostname: ${RABBITMQ_HOSTNAME}
+    image: ${RABBITMQ_IMAGE}
+    networks:
+      - brazona_net_localhost
+    restart: on-failure
+    ports:
+      - ${RABBITMQ1_PORT_EXT}:${RABBITMQ1_PORT_INT} 
+      - ${RABBITMQ_PORT_EXT}:${RABBITMQ_PORT_INT}
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq
+volumes:
+  rabbitmq_vol:
+networks:
+  brazona_net_localhost: {}

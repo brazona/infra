@@ -1,6 +1,6 @@
-# Support Server
+# Infra Estrutura
 
-Servidores que tem o objetivo que oferecer suporte as aplicações, desde monitoramento de dados, desempenho de recursos computacionais, até persistência de dados.
+Repositório destinado a armazenar aplicações da infra estrutura.
 
 ## Estrutura do projeto
 
@@ -14,13 +14,11 @@ Servidores que tem o objetivo que oferecer suporte as aplicações, desde monito
 │       └── grafana.yml
 │       └── deploy.yml
 ├── app
-│   └── grafana
-│       └── local
-│           └── compose.yaml
-│       └── deployment.yaml
-│   └── zipkin
-│   └── postgres
-│   └── grafana
+│   └── db
+│   └── k8s
+│   └── support
+│       └── grafana
+│       └── keycloak
 ├── docs
 │   └── CONTRIBUTING.md
 │   └── CODE_OF_CONDUCT.md

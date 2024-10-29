@@ -1,0 +1,85 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-pg
+  namespace: ${NAMESPACE}
+  labels:
+    app: db-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-pg
+  template:
+    metadata:
+      labels:
+        app: db-pg
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: db-pg
+          image: postgres:12-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-pg-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-pg-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: db-pg-configmap
+                  key: POSTGRES_DB
+            - name: PGDATA
+              value: /mnt/postgresql-12/pgdata/data
+            - name: PG_LOG
+              value: /mnt/postgresql-12/pglogs/logs
+          volumeMounts:
+            - name: pgdata
+              mountPath: /mnt/postgresql-12/pgdata
+            - name: pgsqlos
+              mountPath: /var/opt/pgsql
+            - name: pgbackup
+              mountPath: /mnt/postgresql-12/pgbackup
+            - name: pglogs
+              mountPath: /mnt/postgresql-12/pglogs
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: db-pg-data-pvc
+        - name: pgsqlos
+          persistentVolumeClaim:
+            claimName: pgsql-os
+        - name: pglogs
+          persistentVolumeClaim:
+            claimName: db-pg-log-pvc
+        - name: pgbackup
+          persistentVolumeClaim:
+            claimName: db-pg-backup-pvc
+
+---
+apiVersion: v1  
+kind: Service  
+metadata:  
+  name: db-pg-service  
+  namespace: ${NAMESPACE}
+  labels:
+    app: db-pg
+spec:  
+  type: NodePort  
+  ports:  
+    name: db-pg-deployment  
+    protocol: TCP  
+    port: 5434  # PostgreSQL default port  
+    targetPort: 5432  
+  selector:  
+    app: db-pg             

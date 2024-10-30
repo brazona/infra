@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.5'
 
 services:
   keycloak:
@@ -6,7 +6,9 @@ services:
     hostname: ${KEYCLOAK_HOSTNAME}
     image: ${KEYCLOAK_IMAGE}
     networks:
-      - brazona_net_localhost
+      - bza-network
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
     command:
       - start-dev
       - --import-realm
@@ -25,4 +27,5 @@ services:
     volumes:
       - ./realm-brazona.json:/opt/keycloak/data/import/realm-export.json
 networks:
-  brazona_net_localhost: {}
+  bza-network:
+    external: true

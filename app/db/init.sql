@@ -14,30 +14,21 @@ CREATE ROLE developer WITH NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT LOGIN P
 DROP SCHEMA IF EXISTS idp;
 CREATE SCHEMA idp AUTHORIZATION brazona;
 
+DROP SCHEMA IF EXISTS keycloak;
+CREATE SCHEMA keycloak AUTHORIZATION brazona;
+
 ------------------------------------
 -- GRANT
 ------------------------------------
+-- IDP
+GRANT USAGE, CREATE ON SCHEMA idp TO dba;
+GRANT USAGE, CREATE ON SCHEMA idp TO app;
+GRANT USAGE, CREATE ON SCHEMA idp TO developer;
+-- KEYCLOAK
+GRANT USAGE, CREATE ON SCHEMA keycloak TO dba;
+GRANT USAGE, CREATE ON SCHEMA keycloak TO app;
+GRANT USAGE, CREATE ON SCHEMA keycloak TO developer;
 
-GRANT USAGE ON SCHEMA idp TO dba;
-GRANT ALL PRIVILEGES ON SCHEMA idp TO dba;
-GRANT USAGE ON SCHEMA idp TO app;
-GRANT USAGE ON SCHEMA idp TO developer;
-
-------------------------------------
--- USERS
-------------------------------------
-
-DROP ROLE IF EXISTS cezar_admin;
-CREATE ROLE cezar_admin LOGIN PASSWORD 'EMPOTXYCXG' IN ROLE dba;
-
-DROP ROLE IF EXISTS cezar_develop;
-CREATE ROLE cezar_develop LOGIN PASSWORD '459159' IN ROLE developer;
-
-DROP ROLE IF EXISTS idp_app;
-CREATE ROLE idp_app LOGIN PASSWORD 'FKDRAK4DFF' IN ROLE app;
-
--- DROP SCHEMA IF EXISTS keycloak;
--- CREATE SCHEMA keycloak AUTHORIZATION develop;
 
 ------------------------------------
 -- TABLE IDP.USERS

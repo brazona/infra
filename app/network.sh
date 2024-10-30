@@ -1,2 +1,2 @@
 #!/bin/bash
-docker network create -d bridge local_brazona_net_localhost
+docker network create -d bridge bza-network

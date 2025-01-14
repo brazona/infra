@@ -21,11 +21,11 @@ services:
       KC_DB_URL: jdbc:${KC_DB_URL}/${KC_DB_NAME}
       KC_DB_USERNAME: ${KC_DB_USERNAME}
       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
-      KEYCLOAK_IMPORT: ./realm-brazona.json
+      KEYCLOAK_IMPORT: ./realm.json
     ports:
       - ${KEYCLOAK_PORT_EXT}:${KEYCLOAK_PORT_INT}  
     volumes:
-      - ./realm-brazona.json:/opt/keycloak/data/import/realm-export.json
+      - ./realm.json:/opt/keycloak/data/import/realm-export.json
 networks:
   bza-network:
     external: true

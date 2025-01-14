@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  wiki:
+    container_name: ${WIKI_CONTAINER_NAME}
+    image: ${WIKI_IMAGE}
+    networks:
+      - ${NETWORK}
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: ${DB_HOSTNAME}
+      DB_PORT: ${WIKI_DB_PORT}
+      DB_USER: ${WIKI_DB_USER}
+      DB_PASS: ${WIKI_DB_PASS}
+      DB_NAME: ${WIKI_DB_NAME}
+      LOG_LEVEL: ${WIKI_LOG_LEVEL}
+      ADMIN_EMAIL: ${WIKI_ADMIN_EMAIL}
+      ADMIN_PASS: ${WIKI_ADMIN_PASS}
+    restart: always
+    ports:
+      - ${WIKI_PORT_EXT}:${WIKI_PORT_INT}  
+networks:
+  ${NETWORK}:
+    external: true

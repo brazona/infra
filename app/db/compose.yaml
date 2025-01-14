@@ -18,10 +18,10 @@ services:
       - ${DB_PORT_EXT}:${DB_PORT_INT}  
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db_vol:/var/lib/postgresql/data
+      - pg12_vol:/var/lib/postgresql/data
 
 networks:
   bza-network:
     external: true
 volumes:
-  db_vol: {}
+  pg12_vol: {}

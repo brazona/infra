@@ -1,0 +1,53 @@
+version: '3.5'
+
+services:
+  db_wiki:
+    container_name: db_wiki
+    hostname: db_wiki
+    image: ${DB_IMAGE}
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_PASSWORD: wikijsrocks
+      POSTGRES_USER: wikijs
+    volumes:
+      - db_vol_wiki:/var/lib/postgresql/data
+    networks:
+      - bza-network
+    # extra_hosts:
+    # - "host.docker.internal:host-gateway"
+    # ports:
+    #   - 5532:5432
+    restart: always
+  wiki:
+    image: ghcr.io/requarks/wiki
+    networks:
+      - bza-network
+    # extra_hosts:
+    # - "host.docker.internal:host-gateway"
+    environment:
+      DB_TYPE: postgres
+      #DB_HOST: db_wiki
+      DB_HOST: ${DB_HOSTNAME}
+      DB_PORT: 5432
+      DB_USER: app
+      DB_PASS: 45EO3PDBS2
+      DB_NAME: bza
+      #DB_SCHEMA: wiki
+      #DB_HOST: db_wiki
+      #DB_USER: wikijs
+      #DB_PASS: wikijsrocks
+      #DB_NAME: wiki
+      DB_SCHEMA: wiki
+      LOG_LEVEL: debug
+      ADMIN_EMAIL: user@example.com
+      ADMIN_PASS: SuperSecret123
+    restart: unless-stopped
+    ports:
+      - "8181:3000"
+    # depends_on:
+      - db_wiki  
+networks:
+  bza-network:
+    external: true
+volumes:
+  db_vol_wiki: {}

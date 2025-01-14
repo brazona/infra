@@ -1,34 +1,26 @@
 ------------------------------------
--- ROLES GROUP
+-- USERS
 ------------------------------------
-
 CREATE ROLE brazona WITH SUPERUSER CREATEDB CREATEROLE NOINHERIT LOGIN PASSWORD 'DKC2LTEN4L';
-CREATE ROLE dba WITH NOSUPERUSER CREATEDB CREATEROLE NOINHERIT LOGIN PASSWORD 'G4WC99HK9W';
-CREATE ROLE app WITH NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT LOGIN PASSWORD '45EO3PDBS2';
-CREATE ROLE developer WITH NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT LOGIN PASSWORD 'QYXGI21Q6R';
-
+CREATE ROLE wiki NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS PASSWORD '8SLB8GWU8L';
+CREATE ROLE idp NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS PASSWORD 'Z4HKTFW5WY';
 ------------------------------------
--- SCHEMA
+-- SCHEMAS
 ------------------------------------
-
 DROP SCHEMA IF EXISTS idp;
-CREATE SCHEMA idp AUTHORIZATION brazona;
-
-DROP SCHEMA IF EXISTS keycloak;
-CREATE SCHEMA keycloak AUTHORIZATION brazona;
-
+CREATE SCHEMA idp AUTHORIZATION idp;
+DROP SCHEMA IF EXISTS wiki;
+CREATE SCHEMA wiki AUTHORIZATION wiki;
 ------------------------------------
 -- GRANT
 ------------------------------------
--- IDP
-GRANT USAGE, CREATE ON SCHEMA idp TO dba;
-GRANT USAGE, CREATE ON SCHEMA idp TO app;
-GRANT USAGE, CREATE ON SCHEMA idp TO developer;
--- KEYCLOAK
-GRANT USAGE, CREATE ON SCHEMA keycloak TO dba;
-GRANT USAGE, CREATE ON SCHEMA keycloak TO app;
-GRANT USAGE, CREATE ON SCHEMA keycloak TO developer;
-
+GRANT ALL ON ALL TABLES IN SCHEMA idp TO idp;
+GRANT ALL ON ALL TABLES IN SCHEMA wiki TO wiki;
+------------------------------------
+-- SEARCH PATH
+------------------------------------
+ALTER ROLE idp SET search_path to idp;
+ALTER ROLE wiki SET search_path to wiki;
 
 ------------------------------------
 -- TABLE IDP.USERS
@@ -41,6 +33,7 @@ CREATE TABLE idp.users (
 	is_account_non_locked bool NULL,
 	is_credentials_non_expired bool NULL,
 	is_enabled bool NULL,
+	is_update_password bool NULL,
 	"name" varchar(255) NULL,
 	"password" varchar(255) NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id),
@@ -48,6 +41,7 @@ CREATE TABLE idp.users (
 	CONSTRAINT users_name_unique UNIQUE (name)
 );
 COMMENT ON TABLE idp.users IS 'Tabela para persistencia dos dados de usuários';
+ALTER TABLE idp.users OWNER TO idp;
 
 ------------------------------------
 -- TABLE IDP.OWNERS
@@ -64,7 +58,7 @@ CREATE TABLE idp.owners (
 	CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES idp.users(id)
 );
 COMMENT ON TABLE idp.owners IS 'Tabela que registra dados de algum proprietário de organização.';
-
+ALTER TABLE idp.owners OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.BUSINESS PARTNERS
 ------------------------------------
@@ -81,7 +75,7 @@ CREATE TABLE idp.business_partners (
 	CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES idp.users(id)
 );
 COMMENT ON TABLE idp.business_partners IS 'Tabela que registra os dados dos parceiros de negócio.';
-
+ALTER TABLE idp.business_partners OWNER TO idp;
 
 ------------------------------------
 -- TABLE IDP.ADDRESSES
@@ -102,7 +96,7 @@ CREATE TABLE idp.addresses (
 	CONSTRAINT business_partner_fk FOREIGN KEY (business_partner_id) REFERENCES idp.business_partners(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 COMMENT ON TABLE idp.addresses IS 'Tabela que registra os endereços dos parceiros de negócio.';
-
+ALTER TABLE idp.addresses OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.SERVICES
 ------------------------------------
@@ -115,7 +109,7 @@ CREATE TABLE idp.services (
 	CONSTRAINT services_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE idp.services IS 'Tabela dedicada para armazena informações dos serviços oferecido pela Brazona Tech.';
-
+ALTER TABLE idp.services OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.ROLES
 ------------------------------------
@@ -126,8 +120,8 @@ CREATE TABLE idp.roles (
 	name varchar(255) NOT NULL,
 	CONSTRAINT roles_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE idp.services IS 'Tabela dedicada para armazena informações dos serviços oferecido pela Brazona Tech.';
-
+COMMENT ON TABLE idp.roles IS 'Tabela dedicada para armazena informações dos serviços oferecido pela Brazona Tech.';
+ALTER TABLE idp.roles OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.ORGANIZATION
 ------------------------------------
@@ -143,7 +137,7 @@ CREATE TABLE idp.organizations (
 	CONSTRAINT organizations_owners_fk FOREIGN KEY (id) REFERENCES idp.owners(id)
 );
 COMMENT ON TABLE idp.organizations IS 'Tabela que registra dados das organizações.';
-
+ALTER TABLE idp.organizations OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.SERVICE BY ORGANIZATION
 ------------------------------------
@@ -164,8 +158,8 @@ CREATE TABLE idp.services_by_organizations (
 	CONSTRAINT service_fk FOREIGN KEY (service_id) REFERENCES idp.services(id)
 );
 
-COMMENT ON TABLE idp.services IS 'Tabela responsável por registrar o relacionamento dos papeis de algum parceiro de negócio dentro da organização.';
-
+COMMENT ON TABLE idp.services_by_organizations IS 'Tabela responsável por registrar o relacionamento dos papeis de algum parceiro de negócio dentro da organização.';
+ALTER TABLE idp.services_by_organizations OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.SESSION
 ------------------------------------
@@ -184,14 +178,14 @@ CREATE TABLE idp."session" (
 	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES idp.users(id)
 );
 
-COMMENT ON TABLE idp.services IS 'Tabela dedicada para administrar dados da sessão do usuário.';
-
+COMMENT ON TABLE idp.session IS 'Tabela dedicada para administrar dados da sessão do usuário.';
+ALTER TABLE idp.session OWNER TO idp;
 ------------------------------------
 -- TABLE IDP.USERS
 ------------------------------------
 INSERT INTO idp.users (email,is_account_non_expired,is_account_non_locked,is_credentials_non_expired,is_enabled,"name","password") VALUES
-	 ('cezar.silva@gmail.com',true,true,true,true,'Cezar Silva','$2a$10$0aFkQ9xFY.tLmmnymiY0puLAGFkin3n0MDMfqJWJ//XaskkpLmOF.'),
-	 ('jadina@gmail.com',true,true,true,true,'Jadina','$2a$10$0aFkQ9xFY.tLmmnymiY0puLAGFkin3n0MDMfqJWJ//XaskkpLmOF.');
+	 ('cezar.silva@gmail.com',true,true,true,true, false, 'Cezar Silva','$2a$10$gNU77AVzW4xR1DkiVpuYc.yKci0nsXP7YIOpQ7AiOXDLtb2Fm/6Am'),
+	 ('jadina@gmail.com',true,true,true,true, false, 'Jadina','$2a$10$gNU77AVzW4xR1DkiVpuYc.yKci0nsXP7YIOpQ7AiOXDLtb2Fm/6Am');
 
 
 ------------------------------------

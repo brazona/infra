@@ -184,10 +184,10 @@ ALTER TABLE idp.session OWNER TO idp;
 -- TABLE IDP.USERS
 ------------------------------------
 INSERT INTO idp.users (email,is_account_non_expired,is_account_non_locked,is_credentials_non_expired,is_enabled, is_update_password, "name","password") VALUES
-	 ('cezar.silva@gmail.com',true,true,true,true, false, 'Cezar Silva','$2a$10$gNU77AVzW4xR1DkiVpuYc.yKci0nsXP7YIOpQ7AiOXDLtb2Fm/6Am'),
-	 ('jadina@gmail.com',true,true,true,true, false, 'Jadina','$2a$10$gNU77AVzW4xR1DkiVpuYc.yKci0nsXP7YIOpQ7AiOXDLtb2Fm/6Am'),
-	 ('brazonatech@gmail.com',true,true,true,true, false, 'Esther','$2a$10$gNU77AVzW4xR1DkiVpuYc.yKci0nsXP7YIOpQ7AiOXDLtb2Fm/6Am'),
-	 ('cezarfelipe2008@gmail.com',true,true,true,true, false, 'Julio','$2a$10$gNU77AVzW4xR1DkiVpuYc.yKci0nsXP7YIOpQ7AiOXDLtb2Fm/6Am');
+	 ('cezar.silva@gmail.com',true,true,true,true, false, 'Cezar Silva','$2a$10$6WXEuerXchYDhCw6X6fIfOWssaPRGZ8xrm0hbBhlJYndSIEFg7x2.'),
+	 ('jadina@gmail.com',true,true,true,true, false, 'Jadina','$2a$10$6WXEuerXchYDhCw6X6fIfOWssaPRGZ8xrm0hbBhlJYndSIEFg7x2.'),
+	 ('brazonatech@gmail.com',true,true,true,true, false, 'Esther','$2a$10$6WXEuerXchYDhCw6X6fIfOWssaPRGZ8xrm0hbBhlJYndSIEFg7x2.'),
+	 ('cezarfelipe2008@gmail.com',true,true,true,true, false, 'Julio','$2a$10$6WXEuerXchYDhCw6X6fIfOWssaPRGZ8xrm0hbBhlJYndSIEFg7x2.');
 
 
 ------------------------------------

@@ -171,7 +171,7 @@ CREATE TABLE idp."session" (
 	expires_in varchar(255) NULL,
 	jwt_token varchar(10012) NOT NULL,
 	refresh_expires_in varchar(255) NULL,
-	refresh_token varchar(10012) NOT NULL,
+	refresh_token varchar(10012) NULL,
 	user_id int8 NOT NULL,
 	id int8 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE) NOT NULL,
 	CONSTRAINT session_pk PRIMARY KEY (id),

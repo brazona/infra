@@ -5,7 +5,7 @@ Para atender a necessidade de executar a os servidore em ambiente local, foi cri
 Para executar essa instrução basta abrir o terminal shell, e executar com exemplo abaixo:
 
 ```sh
-bash compose.sh support/keycloak
+bash compose.sh support/wiki
 ```
 
 Informando ao argumento do arquivo shell, os nomes dos servidores que deseja executar.
